@@ -9,6 +9,11 @@ if (file_exists(ROOT_PATH . 'admin/config.php')) {
     die('Config.php is missing. Please set up the database connection in /admin/login.php.');
 }
 
+// Kontrollera om anslutningen till databasen är korrekt
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
 // Hämta de tillgängliga datumen från databasen
 $available_dates = [];
 $result = $conn->query("SELECT setting_value FROM settings WHERE setting_name = 'available_dates'");
@@ -76,6 +81,10 @@ $sql .= " ORDER BY event_time";
 
 $stmt = $conn->prepare($sql);
 
+if (!$stmt) {
+    die("SQL Error: " . $conn->error);
+}
+
 // Bind parametrarna dynamiskt
 $stmt->bind_param($param_types, ...$params);
 $stmt->execute();
@@ -86,9 +95,20 @@ $schedule = []; // Säkerställ att $schedule alltid är definierat
 if ($result->num_rows === 0) {
     echo "<p>No events found for the selected date and filters.</p>";
 } else {
-    // Skapa ett array för att organisera schemat efter tid och rum
     while ($row = $result->fetch_assoc()) {
-        $schedule[$row['event_time']][$row['room_name']] = $row;
+        // Lägg till händelser till schemat per timme
+        $event_start_time = new DateTime($row['event_time']);
+        $event_end_time = new DateTime($row['end_time']);
+        $room_name = $row['room_name'];
+
+        // Loop för varje timme som händelsen täcker
+        for ($time = clone $event_start_time; $time < $event_end_time; $time->modify('+1 hour')) {
+            $time_key = $time->format('H:i');
+            if (!isset($schedule[$time_key])) {
+                $schedule[$time_key] = [];
+            }
+            $schedule[$time_key][$room_name] = $row;
+        }
     }
 }
 
@@ -168,38 +188,44 @@ $end_time_obj = new DateTime($end_time);
             <tbody>
                 <?php
                 // Loop för att skapa schemat mellan det valda tidsintervallet
-                for ($time = clone $start_time_obj; $time <= $end_time_obj; $time->modify('+1 hour')):
+                for ($time = clone $start_time_obj; $time <= $end_time_obj; $time->modify('+1 hour')) {
                     $time_str = $time->format('H:i');
                 ?>
                 <tr>
                     <td><?php echo $time->format('H:i'); ?></td>
                     <?php foreach ($rooms as $room_name): ?>
-                        <?php if (isset($schedule[$time_str][$room_name])): 
+                        <?php if (isset($schedule[$time_str][$room_name])) { 
                             $event = $schedule[$time_str][$room_name];
-                            $event_start_time = new DateTime($event['event_time']);
-                            $event_end_time = new DateTime($event['end_time']);
-                            $duration_hours = $event_end_time->diff($event_start_time)->h;
+
+                            // Kontrollera om händelsen är redan visad i föregående rader
+                            if ($time_str == (new DateTime($event['event_time']))->format('H:i')) {
+                                // Beräkna duration i timmar
+                                $event_start_time = new DateTime($event['event_time']);
+                                $event_end_time = new DateTime($event['end_time']);
+                                $duration_hours = $event_end_time->diff($event_start_time)->h;
                             ?>
-                            <td rowspan="<?php echo $duration_hours; ?>" style="background-color: <?php echo htmlspecialchars($event['color_hex']); ?>">
-                                <?php if ($event['event_link']): ?>
-                                    <a href="<?php echo htmlspecialchars($event['event_link']); ?>" target="_blank">
-                                        <?php echo htmlspecialchars($event['event_name']); ?>
-                                    </a>
-                                <?php else: ?>
-                                    <strong><?php echo htmlspecialchars($event['event_name']); ?></strong>
-                                <?php endif; ?>
-                                <br>
-                                <small><?php echo htmlspecialchars($event_start_time->format('H:i')); ?> - <?php echo htmlspecialchars($event_end_time->format('H:i')); ?></small>
-                                <?php if ($show_description == 'yes' && !empty($event['description'])): ?>
-                                    <p><?php echo htmlspecialchars($event['description']); ?></p>
-                                <?php endif; ?>
-                            </td>
-                        <?php else: ?>
+                                <td rowspan="<?php echo $duration_hours; ?>" style="background-color: <?php echo htmlspecialchars($event['color_hex']); ?>">
+                                    <?php if ($event['event_link']) { ?>
+                                        <a href="<?php echo htmlspecialchars($event['event_link']); ?>" target="_blank">
+                                            <?php echo htmlspecialchars($event['event_name']); ?>
+                                        </a>
+                                    <?php } else { ?>
+                                        <strong><?php echo htmlspecialchars($event['event_name']); ?></strong>
+                                    <?php } ?>
+                                    <br>
+                                    <small><?php echo htmlspecialchars($event_start_time->format('H:i')); ?> - <?php echo htmlspecialchars($event_end_time->format('H:i')); ?></small>
+                                    <?php if ($show_description == 'yes' && !empty($event['description'])) { ?>
+                                        <p><?php echo htmlspecialchars($event['description']); ?></p>
+                                    <?php } ?>
+                                </td>
+                            <?php 
+                            } // Kontroll för första cellen
+                        } else { ?>
                             <td></td>
-                        <?php endif; ?>
+                        <?php } ?>
                     <?php endforeach; ?>
                 </tr>
-                <?php endfor; ?>
+                <?php } ?>
             </tbody>
         </table>
         <?php endif; ?>
