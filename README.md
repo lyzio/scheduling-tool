@@ -33,8 +33,9 @@ Följ dessa steg för att installera och köra applikationen:
 
 ## Användning
 
-    Visning av schema: Gå till huvudvyn för att se schemat. Du kan filtrera efter datum, kategori och rum.
-    Administratörsåtgärder: Logga in som administratör för att lägga till, redigera eller ta bort händelser och hantera inställningar.
+ Visning av schema: Gå till huvudvyn för att se schemat. Du kan filtrera efter datum, kategori och rum.
+
+Administratörsåtgärder: Logga in som administratör för att lägga till, redigera eller ta bort händelser och hantera inställningar.
 
 ## Licens
 
