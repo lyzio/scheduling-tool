@@ -32,7 +32,8 @@ while ($row = $result->fetch_assoc()) {
 // Standardvärden för filter
 $selected_date = isset($_GET['event_date']) ? $_GET['event_date'] : (count($available_dates) > 0 ? $available_dates[0] : date('Y-m-d'));
 $selected_category = isset($_GET['category']) ? $_GET['category'] : '';
-$selected_room = isset($_GET['room']) ? $_GET['room'] : '';  // Nytt filter för rum
+$selected_room = isset($_GET['room']) ? $_GET['room'] : '';  
+$show_description = isset($_GET['show_description']) ? $_GET['show_description'] : 'yes';
 
 // Hämta alla aktiva rum från rooms-tabellen
 $rooms_result = $conn->query("SELECT * FROM rooms WHERE is_active = TRUE");
@@ -55,19 +56,19 @@ $sql = "SELECT schedule.*, categories.name AS category_name, categories.color_he
         JOIN rooms ON schedule.room_id = rooms.id
         WHERE event_date = ?";
 
-$param_types = "s"; // parameter typ för $selected_date
+$param_types = "s"; 
 $params = [$selected_date];
 
 // Lägg till ytterligare parametrar till frågan baserat på filter
 if ($selected_category) {
     $sql .= " AND category_id = ?";
-    $param_types .= "i"; // parameter typ för category_id
+    $param_types .= "i"; 
     $params[] = $selected_category;
 }
 
 if ($selected_room) {
     $sql .= " AND room_id = ?";
-    $param_types .= "i"; // parameter typ för room_id
+    $param_types .= "i"; 
     $params[] = $selected_room;
 }
 
@@ -80,16 +81,19 @@ $stmt->bind_param($param_types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Skapa ett array för att organisera schemat efter tid och rum
-$schedule = [];
-if ($result->num_rows > 0) {
+// Kontrollera om några resultat returnerades
+$schedule = []; // Säkerställ att $schedule alltid är definierat
+if ($result->num_rows === 0) {
+    echo "<p>No events found for the selected date and filters.</p>";
+} else {
+    // Skapa ett array för att organisera schemat efter tid och rum
     while ($row = $result->fetch_assoc()) {
         $schedule[$row['event_time']][$row['room_name']] = $row;
     }
 }
 
-$stmt->close(); // Stäng uttalandet
-$conn->close(); // Stäng anslutningen
+$stmt->close(); 
+$conn->close(); 
 
 // Konvertera start och sluttid till DateTime-objekt
 $start_time_obj = new DateTime($start_time);
@@ -104,86 +108,106 @@ $end_time_obj = new DateTime($end_time);
     <link rel="stylesheet" href="front-style.css">
 </head>
 <body>
-    <header>
-        <!-- Visa uppladdad logotyp -->
-        <img src="images/logo.png" alt="Logo" class="logo">
-    </header>
+    <div class="container">
+        <header>
+            <!-- Centrera logotypen -->
+            <img src="images/logo.png" alt="Logo" class="logo">
+        </header>
 
-    <!-- Filterformulär för kategori, dag och rum -->
-    <form class="filter-form" method="GET" action="index.php">
-        <label for="event_date">Select Date:</label>
-        <select id="event_date" name="event_date">
-            <?php foreach ($available_dates as $date): ?>
-                <option value="<?php echo htmlspecialchars($date); ?>" <?php if ($date == $selected_date) echo 'selected'; ?>>
-                    <?php echo htmlspecialchars($date); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        
-        <label for="category">Select Category:</label>
-        <select id="category" name="category">
-            <option value="">All Categories</option>
-            <?php foreach ($categories as $cat): ?>
-                <option value="<?php echo htmlspecialchars($cat['id']); ?>" <?php if ($cat['id'] == $selected_category) echo 'selected'; ?>>
-                    <?php echo htmlspecialchars($cat['name']); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+        <!-- Filterformulär för kategori, dag och rum -->
+        <form class="filter-form" method="GET" action="index.php">
+            <label for="event_date">Select Date:</label>
+            <select id="event_date" name="event_date">
+                <?php foreach ($available_dates as $date): ?>
+                    <option value="<?php echo htmlspecialchars($date); ?>" <?php if ($date == $selected_date) echo 'selected'; ?>>
+                        <?php echo htmlspecialchars($date); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            
+            <label for="category">Select Category:</label>
+            <select id="category" name="category">
+                <option value="">All Categories</option>
+                <?php foreach ($categories as $cat): ?>
+                    <option value="<?php echo htmlspecialchars($cat['id']); ?>" <?php if ($cat['id'] == $selected_category) echo 'selected'; ?>>
+                        <?php echo htmlspecialchars($cat['name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
 
-        <label for="room">Select Room:</label>
-        <select id="room" name="room">
-            <option value="">All Rooms</option>
-            <?php foreach ($rooms as $room_id => $room_name): ?>
-                <option value="<?php echo htmlspecialchars($room_id); ?>" <?php if ($room_id == $selected_room) echo 'selected'; ?>>
-                    <?php echo htmlspecialchars($room_name); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+            <label for="room">Select Room:</label>
+            <select id="room" name="room">
+                <option value="">All Rooms</option>
+                <?php foreach ($rooms as $room_id => $room_name): ?>
+                    <option value="<?php echo htmlspecialchars($room_id); ?>" <?php if ($room_id == $selected_room) echo 'selected'; ?>>
+                        <?php echo htmlspecialchars($room_name); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="show_description">Show Description:</label>
+            <select id="show_description" name="show_description">
+                <option value="yes" <?php if ($show_description == 'yes') echo 'selected'; ?>>Yes</option>
+                <option value="no" <?php if ($show_description == 'no') echo 'selected'; ?>>No</option>
+            </select>
+            
+            <input type="submit" value="Filter">
+        </form>
         
-        <input type="submit" value="Filter">
-    </form>
-    
-    <!-- Schematabell -->
-    <table class="schedule-table">
-        <thead>
-            <tr>
-                <th>Time</th>
-                <?php foreach ($rooms as $room_name): ?>
-                    <th><?php echo htmlspecialchars($room_name); ?></th>
-                <?php endforeach; ?>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            // Loop för att skapa schemat mellan det valda tidsintervallet
-            for ($time = clone $start_time_obj; $time <= $end_time_obj; $time->modify('+1 hour')):
-                $time_str = $time->format('H:i:s');
-            ?>
-            <tr>
-                <td><?php echo $time->format('H:i'); ?></td>
-                <?php foreach ($rooms as $room_name): ?>
-                    <?php if (isset($schedule[$time_str][$room_name])): 
-                        $event = $schedule[$time_str][$room_name];
-                        $event_start_time = new DateTime($event['event_time']);
-                        $event_end_time = new DateTime($event['end_time']);
-                        $duration_hours = $event_end_time->diff($event_start_time)->h;
-                        ?>
-                        <td rowspan="<?php echo $duration_hours; ?>" style="background-color: <?php echo htmlspecialchars($event['color_hex']); ?>">
-                            <strong><?php echo htmlspecialchars($event['event_name']); ?></strong><br>
-                            <small><?php echo htmlspecialchars($event['event_time']); ?> - <?php echo htmlspecialchars($event['end_time']); ?></small>
-                        </td>
-                    <?php else: ?>
-                        <td></td>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </tr>
-            <?php endfor; ?>
-        </tbody>
-    </table>
+        <!-- Schematabell -->
+        <?php if (!empty($schedule)): ?>
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <?php foreach ($rooms as $room_name): ?>
+                        <th><?php echo htmlspecialchars($room_name); ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Loop för att skapa schemat mellan det valda tidsintervallet
+                for ($time = clone $start_time_obj; $time <= $end_time_obj; $time->modify('+1 hour')):
+                    $time_str = $time->format('H:i');
+                ?>
+                <tr>
+                    <td><?php echo $time->format('H:i'); ?></td>
+                    <?php foreach ($rooms as $room_name): ?>
+                        <?php if (isset($schedule[$time_str][$room_name])): 
+                            $event = $schedule[$time_str][$room_name];
+                            $event_start_time = new DateTime($event['event_time']);
+                            $event_end_time = new DateTime($event['end_time']);
+                            $duration_hours = $event_end_time->diff($event_start_time)->h;
+                            ?>
+                            <td rowspan="<?php echo $duration_hours; ?>" style="background-color: <?php echo htmlspecialchars($event['color_hex']); ?>">
+                                <?php if ($event['event_link']): ?>
+                                    <a href="<?php echo htmlspecialchars($event['event_link']); ?>" target="_blank">
+                                        <?php echo htmlspecialchars($event['event_name']); ?>
+                                    </a>
+                                <?php else: ?>
+                                    <strong><?php echo htmlspecialchars($event['event_name']); ?></strong>
+                                <?php endif; ?>
+                                <br>
+                                <small><?php echo htmlspecialchars($event_start_time->format('H:i')); ?> - <?php echo htmlspecialchars($event_end_time->format('H:i')); ?></small>
+                                <?php if ($show_description == 'yes' && !empty($event['description'])): ?>
+                                    <p><?php echo htmlspecialchars($event['description']); ?></p>
+                                <?php endif; ?>
+                            </td>
+                        <?php else: ?>
+                            <td></td>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </tr>
+                <?php endfor; ?>
+            </tbody>
+        </table>
+        <?php endif; ?>
+    </div>
 
     <!-- Sidfot -->
     <footer>
-        <p>Made by <a href="http://lyzio.net" target="_blank">Oliver</a></p>
+        <p>Made by <a href="http://lyzio.net" target="_blank">Oliver</a> - <a href="admin/login.php">Login</a></p>
     </footer>
 </body>
 </html>

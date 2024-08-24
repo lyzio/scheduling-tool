@@ -1,76 +1,80 @@
-/* front-style.css */
+/* Grundinställningar för body */
+body {
+  background-color: #f1f1f1;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
 
-/* Reset styling */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Body styling */
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-  }
-  
-  /* Header styling */
-  header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  /* Logo styling */
-  .logo {
-    max-width: 150px;
-    margin-bottom: 10px;
-  }
-  
-  /* Filter form styling */
-  .filter-form {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .filter-form label, .filter-form input, .filter-form select {
-    margin: 5px;
-  }
-  
-  /* Schedule table styling */
-  .schedule-table {
-    width: 80%;
-    border-collapse: collapse;
-    margin-bottom: 30px;
-  }
-  
-  .schedule-table th, .schedule-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .schedule-table th {
-    background-color: #f2f2f2;
-  }
-  
-  /* Footer styling */
-  footer {
-    text-align: center;
-    font-size: 14px;
-    margin-top: 30px;
-  }
-  
-  footer a {
-    color: #333;
-    text-decoration: none;
-  }
-  
-  footer a:hover {
-    text-decoration: underline;
-  }
-  
+/* Centrera innehållet */
+.container {
+  flex: 1;
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Centrera logotypen */
+.logo {
+  display: block;
+  margin: 20px auto;
+}
+
+/* Stilar för filterformuläret */
+.filter-form {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.filter-form select,
+.filter-form input[type="submit"] {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Stilar för schematabellen */
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.schedule-table th,
+.schedule-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.schedule-table th {
+  background-color: #f9f9f9;
+}
+
+.schedule-table td a {
+  color: #ff5e57;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.schedule-table td a:hover {
+  text-decoration: underline;
+}
+
+/* Sidfot */
+footer {
+  text-align: center;
+  padding: 10px 0;
+  background-color: #d2dae2;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  margin-top: auto;
+}
+
+footer p {
+  margin: 0;
+}
