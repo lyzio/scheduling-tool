@@ -9,6 +9,7 @@
     <div class="header">
         <div class="menu">
             <a href="manage_schedule.php">Manage Schedule</a>
+            <a href="add_schedule.php">Add Schedule</a>
             <a href="manage_categories.php">Manage Categories</a>
             <a href="manage_rooms.php">Manage Rooms</a>
             <a href="settings.php">Settings</a>
