@@ -1,140 +1,102 @@
-/* admin-style.css */
+/* Grundinställningar för body */
+body {
+  margin: 0;
+  padding-top: 50px; /* Gör plats för fast header */
+  padding-bottom: 50px; /* Gör plats för fast footer */
+  font-family: Arial, sans-serif; /* Standard font för sidan */
+  color: #1e272e; /* Standard textfärg */
+  background-color: #f4f4f4; /* Ljussätt sidans bakgrundsfärg */
+}
 
-/* Reset styling */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Body styling */
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  /* Container styling */
-  .container {
-    width: 80%;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-  }
-  
-  /* Navigation menu styling */
-  nav {
-    width: 100%;
-    background-color: #ffc048;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  nav ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-  
-  nav ul li {
-    margin: 0;
-  }
-  
-  nav ul li a {
-    display: block;
-    padding: 15px 20px;
-    color: #1e272e;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s;
-  }
-  
-  nav ul li a:hover {
-    background-color: #ff5e57;
-    color: #fff;
-  }
-  
-  nav ul li:last-child a {
-    background-color: #1e272e; /* Darker background for "Gå till schemat" */
-    color: #ffc048;
-  }
-  
-  nav ul li:last-child a:hover {
-    background-color: #333;
-    color: #ffc048;
-  }
-  
-  /* Form styling */
-  form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  form label {
-    margin-top: 10px;
-  }
-  
-  form input, form select, form textarea {
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-  }
-  
-  form button {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  form button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Table styling */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  table th, table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-  }
-  
-  table th {
-    background-color: #f4f4f4;
-  }
-  
-  /* Footer styling */
-  footer {
-    text-align: center;
-    font-size: 12px;
-    margin-top: 20px;
-    color: #333;
-  }
-  
-  footer a {
-    color: #007BFF;
-    text-decoration: none;
-  }
-  
-  footer a:hover {
-    text-decoration: underline;
-  }
-  
+/* Styling för innehållscontainern */
+.container {
+  width: 80%; /* Begränsar bredden på innehållet till 80% */
+  margin: 20px auto; /* Centrera och skapa luft mellan innehåll och fönsterkant */
+  padding: 20px;
+  background-color: #ffffff; /* Vit bakgrundsfärg för att skilja från sidans bakgrund */
+  border-radius: 8px; /* Rundade hörn */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Lätt skugga för att ge djup */
+  box-sizing: border-box; /* Inkluderar padding och border i elementets totala bredd */
+}
+
+/* Marginal för att hålla sidan borta från kanterna */
+.container {
+  margin-left: 10%; /* Lägg till 10% marginal på vänster sida */
+  margin-right: 10%; /* Lägg till 10% marginal på höger sida */
+}
+
+/* Styling för alla tabeller i admin-sidor */
+table {
+  width: 100%;
+  border-collapse: collapse; /* Kollapsa gränser för att få en enhetlig tabell */
+  margin-top: 20px;
+  border-spacing: 5px; /* Marginal mellan rader och kolumner */
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  vertical-align: middle;
+  background-color: #fff; /* Vit bakgrundsfärg för celler */
+}
+
+/* Styling för rubrikceller */
+table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+/* Justering av inmatningsfält och knappar i tabeller */
+table input[type="text"], table input[type="checkbox"], table button {
+  width: 90%; /* Minska bredden för att passa in i cellen */
+  margin: 5px 0; /* Marginal för att skapa avstånd mellan element */
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #d2dae2; /* Bakgrundsfärg för inmatningsfält */
+  color: #1e272e; /* Textfärg för inmatningsfält */
+  border: 1px solid #ddd;
+}
+
+/* Justering av inmatningsfält */
+form input[type="text"], form input[type="date"], form input[type="time"], form select {
+  width: calc(100% - 20px); /* Gör inmatningsfältet något mindre än sin behållare */
+  padding: 10px;
+  margin: 10px 0; /* Marginal för att skapa avstånd mellan element */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #d2dae2; /* Bakgrundsfärg för inmatningsfält */
+  color: #1e272e; /* Textfärg för inmatningsfält */
+  box-sizing: border-box; /* Inkluderar padding och border i elementets totala bredd */
+}
+
+/* Styling för knappar */
+.button, table button {
+  background-color: #ff5e57;
+  color: #1e272e;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin: 5px 0; /* Marginal för att skapa avstånd mellan knappar */
+}
+
+.button:hover, table button:hover {
+  background-color: #ffc048;
+  color: white;
+}
+
+/* Footer styling */
+.footer {
+  position: fixed; /* Fixera footer längst ner */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background-color: #d2dae2;
+  color: #1e272e;
+  box-sizing: border-box;
+}

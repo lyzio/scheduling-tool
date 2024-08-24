@@ -1,0 +1,43 @@
+/* Styling för headern */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px; /* Fast höjd för headern */
+    background-color: #ffc048;
+    color: #1e272e;
+    display: flex; /* Använd flexbox för att skapa en horisontell layout */
+    justify-content: flex-start; /* Justera innehåll till vänster */
+    align-items: center; /* Vertikal centrering av innehåll i headern */
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+/* Gör länkarna i headern till block och centrera texten */
+.header a {
+    color: #1e272e;
+    text-decoration: none;
+    padding: 10px 15px; /* Minska padding för att passa inom headerns höjd */
+    border-radius: 4px;
+    text-align: center;
+    margin-right: 15px; /* Lägger till mellanrum mellan länkar */
+}
+
+/* Hover-effekt för länkar i headern */
+.header a:hover {
+    background-color: #ff5e57;
+    color: white;
+}
+
+/* Inverterad färg för "Go to Schedule"-länken */
+.header a[href="../index.php"] {
+    background-color: #1e272e;
+    color: #ffc048;
+}
+
+.header a[href="../index.php"]:hover {
+    background-color: #ffc048;
+    color: #1e272e;
+}
