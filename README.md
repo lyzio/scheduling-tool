@@ -14,13 +14,13 @@ En enkel webbapplikation för att hantera och visa scheman baserat på händelse
 
 Följ dessa steg för att installera och köra applikationen:
 
-1. Installera nödvändiga beroenden. Eftersom detta är en PHP-applikation krävs inga extra beroenden, men du behöver en fungerande PHP-installation och en MySQL/MariaDB-databas.
+1. Installera nödvändiga beroenden. Eftersom detta är en PHP-applikation krävs inga extra beroenden, men du behöver en fungerande PHP-installation och en MySQL/MariaDB-databas. 
 
 2. Konfigurera databasen:
 
     Skapa en ny MySQL/MariaDB-databas.
-    Importera SQL-skriptet database/schema.sql för att skapa nödvändiga tabeller.
-    Uppdatera admin/config.php med dina databasuppgifter (server, användarnamn, lösenord, och databasnamn).
+    Importera SQL-skriptet database/schema.sql för att skapa nödvändiga tabeller. - Ta bort mappen database efter installation.
+    Uppdatera admin/config.php med dina databasuppgifter (server, användarnamn, lösenord, och databasnamn). 
 
 3. Konfigurera applikationen:
 
@@ -30,6 +30,7 @@ Följ dessa steg för att installera och köra applikationen:
 
     Navigera till index.php för att börja använda schemavisningen.
     Logga in via admin/login.php för att hantera händelser och inställningar.
+    Efter installation, ta bort install.php
 
 ## Användning
 
