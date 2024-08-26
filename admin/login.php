@@ -1,14 +1,4 @@
 <?php
-require 'config.php'; // Inkludera databasconfigurationsfilen
-session_start(); // Starta sessionen
-
-// Kontrollera om användaren redan är inloggad via en kaka
-if (isset($_COOKIE['loggedin']) && $_COOKIE['loggedin'] == true) {
-    $_SESSION['loggedin'] = true;
-    header('Location: manage_schedule.php');
-    exit;
-}
-
 // Hantera formulärinmatning
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
@@ -17,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($password === 'your_secret_password') {
         $_SESSION['loggedin'] = true;
         setcookie('loggedin', true, time() + (86400 * 30), "/"); // Sätt kaka för att hålla användaren inloggad i 30 dagar
-        header('Location: manage_schedule.php');
+        header('Location: edit_schedule.php');
         exit;
     } else {
         $login_error = "Incorrect password. Please try again.";

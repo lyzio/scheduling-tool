@@ -309,7 +309,7 @@ if (count($used_rooms) > 0) {
 
     <!-- Sidfot -->
     <footer>
-        <p>Made by <a href="http://lyzio.net" target="_blank">Oliver</a> - <a href="admin/login.php">Login</a></p>
+        <p>Made by <a href="http://lyzio.net" target="_blank">Oliver</a> - <a href="admin/edit_schedule.php">Login</a></p>
     </footer>
 </body>
 </html>

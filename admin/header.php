@@ -1,3 +1,18 @@
+<?php
+require 'config.php'; // Inkludera databasconfigurationsfilen
+session_start(); // Starta sessionen
+
+// Kontrollera om användaren redan är inloggad via en kaka
+if (!isset($_COOKIE['loggedin']) || $_COOKIE['loggedin'] != true) {
+    // Om användaren inte är inloggad, omdirigera till login.php
+    header('Location: login.php');
+    exit;
+}
+
+// Om användaren är inloggad, sätt sessionen
+$_SESSION['loggedin'] = true;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
